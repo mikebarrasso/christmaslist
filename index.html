@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mike's Christmas List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: warm, festive, simple; family reading on a phone
+   IDEA: a stack of gift tags tied with ribbon
+   PICTURE: a ribbon-and-bow band over evergreen, then the tags themselves
+   COLOUR and TYPE: evergreen, snow white, cranberry accent; DM Serif Display + Inter
+   LAYOUT: one calm column, store groups, tags with a big check button */
+:root{color-scheme:light dark;
+--bg:light-dark(#f6f7f4,#0b1712);--card:light-dark(#ffffff,#13251d);--ink:light-dark(#14211b,#eef3ef);
+--muted:light-dark(#5b6b62,#a3b5aa);--line:light-dark(#dfe5e0,#24392f);
+--pine:#0f3d2e;--pine2:#165a43;--berry:#b3122e;--berry2:light-dark(#b3122e,#ff6b80);--gold:#e7c36a}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+header{background:var(--pine);color:#f3f7f4;position:relative;overflow:hidden;padding:36px max(5vw,18px) 40px}
+header svg.snow{position:absolute;inset:0;width:100%;height:100%;opacity:.5;pointer-events:none}
+.hwrap{position:relative;max-width:760px;margin:0 auto;display:flex;gap:20px;align-items:center}
+.hwrap svg.bow{flex:none;width:96px;height:96px}
+h1{font:400 clamp(34px,7vw,52px)/1.05 "DM Serif Display",Georgia,serif;margin:0;text-wrap:balance}
+.sub{margin:8px 0 0;color:#cfe0d6;font-size:16px}
+.ribbon{height:14px;background:var(--berry);box-shadow:inset 0 -3px 0 rgba(0,0,0,.18)}
+main{max-width:760px;margin:0 auto;padding:22px max(4vw,14px) 64px}
+.status{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between;margin:4px 0 6px}
+.count{font:400 24px/1.2 "DM Serif Display",Georgia,serif}
+.note{color:var(--muted);font-size:14px;margin:0 0 6px}
+.note:empty{display:none}
+h2{font:600 14px/1.3 Inter,sans-serif;color:var(--muted);margin:26px 0 10px;display:flex;gap:8px;align-items:baseline}
+h2 span{font-weight:400}
+ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.tag{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px 12px 12px;display:grid;grid-template-columns:104px minmax(0,1fr) auto;grid-template-rows:auto auto 1fr;gap:2px 14px;align-items:start;position:relative;box-shadow:0 1px 0 rgba(0,0,0,.03);overflow:hidden}
+.pic{grid-row:1 / span 3;grid-column:1;display:block;width:104px;height:104px;border-radius:10px;overflow:hidden;background:#ecebe8}
+.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.was{color:var(--muted);text-decoration:line-through;font-weight:400;margin-right:6px}
+.sale{color:var(--berry2)}
+.promo{font-size:13px;color:var(--muted);text-align:right;line-height:1.3;max-width:13em}
+.name{font-weight:600;font-size:17px;line-height:1.3}
+.name a{color:inherit;text-decoration:none}
+.name a:hover,.name a:focus-visible{text-decoration:underline}
+.meta{color:var(--muted);font-size:14px;line-height:1.4}
+.name,.meta,.row2{grid-column:2}
+.right{grid-row:1 / span 3;grid-column:3;display:flex;flex-direction:column;align-items:flex-end;gap:6px;align-self:center}
+.price{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.row2{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin-top:2px}
+.view{color:var(--berry2);font-weight:500;font-size:14px;text-decoration:none;min-height:32px;display:inline-flex;align-items:center}
+.view:hover{text-decoration:underline}
+button{font:inherit;cursor:pointer}
+.got{min-height:44px;min-width:44px;padding:0 14px;border-radius:999px;border:2px solid var(--pine2);background:transparent;color:var(--ink);font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:8px}
+.got svg{width:18px;height:18px}
+.got:hover{background:color-mix(in srgb,var(--pine2) 12%,transparent)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.got[hidden],.back[hidden]{display:none}
+.bought .tag{opacity:.75}.bought .pic{filter:grayscale(1)}
+.bought .name{text-decoration:line-through}
+.back{min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);font-size:14px}
+.toggle{margin-top:28px;background:none;border:0;color:var(--muted);text-decoration:underline;min-height:44px;padding:0;font-size:14px}
+.toggle[hidden]{display:none}
+.empty{text-align:center;padding:28px 10px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%) translateY(140%);background:var(--pine);color:#fff;border-radius:999px;padding:6px 6px 6px 18px;display:flex;gap:10px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .25s ease;max-width:calc(100vw - 24px);font-size:15px}
+.toast.on{transform:translateX(-50%) translateY(0)}
+.toast button{min-height:40px;padding:0 16px;border-radius:999px;border:0;background:var(--gold);color:#1b1b1b;font-weight:600}
+footer{color:var(--muted);font-size:13px;margin-top:30px}
+@media(max-width:560px){.hwrap svg.bow{width:64px;height:64px}.tag{grid-template-columns:88px minmax(0,1fr);grid-template-rows:auto auto auto auto}.pic{width:88px;height:88px;grid-row:1 / span 3}.right{grid-row:4;grid-column:1 / span 2;flex-direction:row;flex-wrap:wrap;justify-content:space-between;align-items:center;margin-top:8px;align-self:auto}.promo{text-align:left;max-width:none}.pricebox{display:flex;flex-direction:column}}
+@media(prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <svg class="snow" aria-hidden="true"><defs><pattern id="sn" width="90" height="90" patternUnits="userSpaceOnUse"><circle cx="12" cy="18" r="2" fill="#fff"/><circle cx="58" cy="9" r="1.3" fill="#fff"/><circle cx="40" cy="52" r="1.6" fill="#fff"/><circle cx="78" cy="66" r="2.2" fill="#fff"/><circle cx="20" cy="76" r="1.2" fill="#fff"/></pattern></defs><rect width="100%" height="100%" fill="url(#sn)"/></svg>
+  <div class="hwrap">
+    <svg class="bow" viewBox="0 0 100 100" aria-hidden="true">
+      <rect x="14" y="44" width="72" height="48" rx="6" fill="#f3f7f4"/>
+      <rect x="14" y="44" width="72" height="10" fill="#dfe8e2"/>
+      <rect x="45" y="44" width="10" height="48" fill="#b3122e"/>
+      <path d="M50 44 C34 22 14 30 24 42 C30 48 42 46 50 44Z" fill="#d1213f"/>
+      <path d="M50 44 C66 22 86 30 76 42 C70 48 58 46 50 44Z" fill="#b3122e"/>
+      <circle cx="50" cy="43" r="6" fill="#8e0d24"/>
+      <path d="M50 46 L40 62 L44 62 L50 50Z M50 46 L60 62 L56 62 L50 50Z" fill="#8e0d24"/>
+    </svg>
+    <div>
+      <h1>Mike's Christmas List</h1>
+      <p class="sub">Bought something? Tap “Got it” and it disappears for everyone.</p>
+    </div>
+  </div>
+</header>
+<div class="ribbon" aria-hidden="true"></div>
+<main>
+  <div class="status"><div class="count" id="count" aria-live="polite">18 gifts on the list</div></div>
+  <p class="note" id="note"></p>
+  <div id="list"></div>
+  <button class="toggle" id="toggle" hidden aria-expanded="false"></button>
+  <div id="boughtWrap" class="bought" hidden></div>
+  <footer>Prices and photos from each store’s site on November 27. Crossed-out prices are the original price; prices may change.</footer>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText">Marked as bought</span><button id="undo">Undo</button></div>
+<script>
+{
+const ITEMS = [
+ {id:"v-ss-salt",store:"Vuori",name:"Short Sleeve Ponto Performance Tee",color:"Salt Heather/Boulder Heather",size:"L",price:"$79",url:"https://vuoriclothing.com/products/short-sleeve-ponto-performance-tee-salt-heather-boulder-heather",img:"img/v-ss-salt.jpg"},
+ {id:"v-ss-boulder",store:"Vuori",name:"Short Sleeve Ponto Performance Tee",color:"Boulder Heather",size:"L",price:"$79",url:"https://vuoriclothing.com/products/short-sleeve-ponto-performance-tee-boulder-heather",img:"img/v-ss-boulder.jpg"},
+ {id:"v-ss-whiteink",store:"Vuori",name:"Short Sleeve Ponto Performance Tee",color:"White/Ink",size:"L",price:"$79",url:"https://vuoriclothing.com/products/short-sleeve-ponto-performance-tee-white-ink",img:"img/v-ss-whiteink.jpg"},
+ {id:"v-ls-raisin",store:"Vuori",name:"Long Sleeve Ponto Performance Tee",color:"Raisin Heather",size:"L",price:"$88",url:"https://vuoriclothing.com/products/long-sleeve-ponto-performance-tee-raisin-heather",img:"img/v-ls-raisin.jpg"},
+ {id:"v-pocket-suede",store:"Vuori",name:"Ponto Pocket Tee, Relaxed Fit",color:"Suede",size:"L",price:"$78",url:"https://vuoriclothing.com/products/short-sleeve-ponto-pocket-tee-relaxed-fit-suede",img:"img/v-pocket-suede.jpg"},
+ {id:"v-jogger-black",store:"Vuori",name:"Ponto Performance Jogger",color:"Black Heather",size:"L, regular length",price:"$110",url:"https://vuoriclothing.com/products/ponto-performance-jogger-black-heather",img:"img/v-jogger-black.jpg"},
+ {id:"v-halfzip-army",store:"Vuori",name:"Ponto Half Zip Mock Neck",color:"Army Heather",size:"L",price:"$118",url:"https://vuoriclothing.com/products/ponto-half-zip-mock-neck-army-heather",img:"img/v-halfzip-army.jpg"},
+ {id:"v-hoodie-acorn",store:"Vuori",name:"Seaside Pullover Hoodie 2.0",color:"Acorn Heather",size:"L",price:"$144",url:"https://vuoriclothing.com/products/seaside-pullover-hoodie-2-0-acorn-heather",img:"img/v-hoodie-acorn.jpg"},
+ {id:"v-sweat-butter",store:"Vuori",name:"Seaside Straight Leg Sweatpant",color:"Buttermilk Heather",size:"L, 30\" inseam",price:"$128",url:"https://vuoriclothing.com/products/seaside-straight-leg-sweatpant-30-buttermilk-heather",img:"img/v-sweat-butter.jpg"},
+ {id:"rb-harvey-steel",store:"Rag & Bone",name:"Harvey Rib-Knit Polo",color:"Steel",size:"L",price:"$175",url:"https://www.rag-bone.com/p/harvey-rib-knit-polo-shirt-RH2226S6MCO.html",img:"img/rb-harvey-steel.jpg",was:"$248",promo:"$122.50"},
+ {id:"rb-dalton-salute",store:"Rag & Bone",name:"Dalton Silk-Cotton Knit Shirt",color:"Salute",size:"L",price:"$210",url:"https://www.rag-bone.com/p/dalton-silk-cotton-knit-shirt-RH9326P6MLY.html",img:"img/rb-dalton-salute.jpg",was:"$298",promo:"$147"},
+ {id:"rb-sweater-granite",store:"Rag & Bone",name:"Washed Cotton Sweater",color:"Granite",size:"L",price:"$165",url:"https://www.rag-bone.com/p/washed-cotton-sweater-RH9926P6MCO.html",img:"img/rb-sweater-granite.jpg",was:"$238",promo:"$115.50"},
+ {id:"rb-sweater-steel",store:"Rag & Bone",name:"Washed Cotton Sweater",color:"Steel",size:"L",price:"$165",url:"https://www.rag-bone.com/p/washed-cotton-sweater-RH9926P6MCO.html",img:"img/rb-sweater-steel.jpg",was:"$238",promo:"$115.50"},
+ {id:"rb-henley-black",store:"Rag & Bone",name:"Classic Slub Henley",color:"Jet Black",size:"L",price:"$178",url:"https://www.rag-bone.com/p/classic-slub-henley-M000T676G.html",img:"img/rb-henley-black.jpg"},
+ {id:"rb-trainers",store:"Rag & Bone",name:"Retro Leather Legacy Trainers",color:"Army Salute White",size:"US 11 (the site lists EU sizes)",price:"$230",url:"https://www.rag-bone.com/p/retro-leather-legacy-trainers-RZ7826S528L.html?dwvar_RZ7826S528L_color=100",img:"img/rb-trainers-white.jpg",was:"$328",promo:"$161"},
+ {id:"oc-low1-white",store:"Oliver Cabell",name:"Low 1 Sneaker",color:"White",size:"11",price:"$199.50",url:"https://olivercabell.com/products/low-1-white-orthopedic-mens",img:"img/oc-low1-white.jpg",was:"$209.99"},
+ {id:"tn-hoodie-stone",store:"Three Nails",name:"Signature Fleece Hoodie",color:"Stone",size:"L",price:"$58",url:"https://threenails.com/products/tech-fleece-hoodie-stone",img:"img/tn-hoodie-stone.jpg",was:"$88"},
+ {id:"tn-jogger-stone",store:"Three Nails",name:"Signature Fleece Sweatpants",color:"Stone",size:"M",price:"$54",url:"https://threenails.com/products/tech-fleece-jogger-stone",img:"img/tn-jogger-stone.jpg",was:"$78"}
+];
+const STORES = ["Vuori","Rag & Bone","Oliver Cabell","Three Nails"];
+const esc = s => String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>';
+
+const $ = id => document.getElementById(id);
+const listEl=$("list"), boughtEl=$("boughtWrap"), toggleEl=$("toggle"), noteEl=$("note"), countEl=$("count"), toast=$("toast");
+let bought = new Set(), canWrite = false, showBought = false, col = null, lastId = null, toastTimer = null, busy = new Set();
+
+function tag(it, isBought){
+  const action = isBought
+    ? `<button class="back" data-back="${it.id}" ${canWrite?"":"hidden"}>Put back</button>`
+    : `<button class="got" data-got="${it.id}" ${canWrite?"":"hidden"} aria-label="Got it: ${esc(it.name)}, ${esc(it.color)}">${CHECK}Got it</button>`;
+  return `<li class="tag">
+    <a class="pic" href="${esc(it.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="${esc(it.img)}" alt="" loading="lazy" width="104" height="104"></a>
+    <div class="name"><a href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.name)}</a></div>
+    <div class="right"><div class="pricebox" style="text-align:right">${it.was?`<span class="price"><span class="was" aria-label="Was ${esc(it.was)}">${esc(it.was)}</span><span class="sale">${esc(it.price)}</span></span>`:`<span class="price">${esc(it.price)}</span>`}${it.promo?`<div class="promo">${esc(it.promo)} with the extra 30% off through Nov 27</div>`:""}</div>${action}</div>
+    <div class="meta">${esc(it.color)} · Size ${esc(it.size)}</div>
+    <div class="row2"><a class="view" href="${esc(it.url)}" target="_blank" rel="noopener">View at ${esc(it.store)} ›</a></div>
+  </li>`;
+}
+
+function render(){
+  const left = ITEMS.filter(i=>!bought.has(i.id));
+  const done = ITEMS.filter(i=>bought.has(i.id));
+  countEl.textContent = left.length===1 ? "1 gift left on the list" : `${left.length} gifts left on the list`;
+  listEl.innerHTML = left.length ? STORES.map(s=>{
+    const g = left.filter(i=>i.store===s);
+    if(!g.length) return "";
+    return `<h2>${esc(s)} <span>${g.length} ${g.length===1?"item":"items"}</span></h2><ul>${g.map(i=>tag(i,false)).join("")}</ul>`;
+  }).join("") : `<p class="empty">Everything's been bought. Merry Christmas!</p>`;
+  toggleEl.hidden = !done.length;
+  toggleEl.textContent = showBought ? "Hide bought gifts" : `Show bought gifts (${done.length})`;
+  toggleEl.setAttribute("aria-expanded", String(showBought));
+  boughtEl.hidden = !(showBought && done.length);
+  boughtEl.innerHTML = done.length ? `<h2>Already bought</h2><ul>${done.map(i=>tag(i,true)).join("")}</ul>` : "";
+}
+
+function showToast(text, id){
+  $("toastText").textContent = text;
+  lastId = id;
+  $("undo").hidden = !id;
+  toast.classList.add("on");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>toast.classList.remove("on"), 7000);
+}
+
+async function mark(id, on){
+  if(!col || busy.has(id)) return;
+  busy.add(id);
+  // show the change right away
+  if(on) bought.add(id); else bought.delete(id);
+  render();
+  try{
+    if(on) await col.doc(id).set({bought:true, at:Date.now()});
+    else await col.doc(id).delete();
+    showToast(on ? "Marked as bought. It's hidden for everyone." : "Put back on the list.", on ? id : null);
+  }catch(e){
+    if(on) bought.delete(id); else bought.add(id);
+    if(e && e.code==="invalid_argument"){ canWrite=false; noteEl.textContent="You can browse the list, but this link can't check gifts off. To get a Got it button, ask Mike to invite you to this page by email."; }
+    else showToast("That didn't save. Try again in a moment.", null);
+    render();
+  }finally{ busy.delete(id); }
+}
+
+document.addEventListener("click", e=>{
+  const g = e.target.closest("[data-got]"); if(g){ mark(g.dataset.got, true); return; }
+  const b = e.target.closest("[data-back]"); if(b){ mark(b.dataset.back, false); return; }
+});
+toggleEl.addEventListener("click", ()=>{ showBought = !showBought; render(); });
+$("undo").addEventListener("click", ()=>{ toast.classList.remove("on"); if(lastId) mark(lastId, false); lastId=null; });
+
+render();
+noteEl.textContent = "Loading what's already been bought…";
+canWrite = true;
+col = {
+  doc: id => ({
+    set: () => api({id, on:true}),
+    delete: () => api({id, on:false})
+  })
+};
+async function api(body){
+  const r = await fetch("/api/bought", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+  if(!r.ok) throw new Error("save failed");
+  apply(await r.json());
+}
+const known = new Set(ITEMS.map(i=>i.id));
+function apply(data){
+  const next = new Set();
+  (Array.isArray(data && data.bought) ? data.bought : []).forEach(id=>{ if(typeof id==="string" && known.has(id)) next.add(id); });
+  busy.forEach(id=>{ if(bought.has(id)) next.add(id); else next.delete(id); });
+  bought = next;
+  noteEl.textContent = "";
+  render();
+}
+async function load(){
+  try{
+    const r = await fetch("/api/bought", {cache:"no-store"});
+    if(!r.ok) throw new Error();
+    apply(await r.json());
+  }catch(e){ noteEl.textContent = "Couldn't load what's been bought, so some gifts may already be taken."; }
+}
+load();
+setInterval(()=>{ if(!document.hidden && !busy.size) load(); }, 15000);
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) load(); });
+}
+</script>
+</body>
+</html>
